@@ -1,0 +1,10 @@
+{
+  "fr": {
+    "addTogetherConstraint": "Ajouter une contrainte 'Ensemble' :",
+    "addApartConstraint": "Ajouter une contrainte 'Séparés' :"
+  },
+  "en": {
+    "addTogetherConstraint": "Add a new 'Together' constraint:",
+    "addApartConstraint": "Add a new 'Apart' constraint:"
+  }
+}
