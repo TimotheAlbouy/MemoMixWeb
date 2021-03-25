@@ -48,8 +48,17 @@
 </template>
 
 <script>
+import {
+  BModal, BFormGroup, BFormSelect,
+  BIconXCircle, BIconCheckCircle,
+} from "bootstrap-vue";
+
 export default {
   name: 'EntryModal',
+  components: {
+    BModal, BFormGroup, BFormSelect,
+    BIconXCircle, BIconCheckCircle
+  },
   props: {
     value: {
       type: Boolean,

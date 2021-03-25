@@ -32,8 +32,17 @@
 </template>
 
 <script>
+import {
+  BTable, BButton, BCollapse, BCard, BCardHeader,
+  BIconXCircle
+} from "bootstrap-vue";
+
 export default {
   name: 'HistoryPane',
+  components: {
+    BTable, BButton, BCollapse, BCard, BCardHeader,
+    BIconXCircle
+  },
   props: {
     history: {
       type: Array,

@@ -14,7 +14,7 @@
               La personne existe déjà.
             </div>
           </b-form-group>
-          <b-form-checkbox v-model="updateHistory" v-if="!isCreationModal">
+          <b-form-checkbox v-model="updateHistory" v-if="!isCreationModal" switch>
             Modifier les occurrences de la personne dans l'historique
           </b-form-checkbox>
         </b-form>
@@ -35,8 +35,17 @@
 </template>
 
 <script>
+import {
+  BModal, BButton, BForm, BFormGroup, BFormInput, BFormCheckbox,
+  BIconXCircle, BIconCheckCircle
+} from "bootstrap-vue";
+
 export default {
   name: 'PersonModal',
+  components: {
+    BModal, BButton, BForm, BFormGroup, BFormInput, BFormCheckbox,
+    BIconXCircle, BIconCheckCircle
+  },
   props: {
     value: {
       type: Boolean,
@@ -53,7 +62,7 @@ export default {
   data() {
     return {
       newPerson: this.generateNewPerson(),
-      updateHistory: true
+      updateHistory: false
     };
   },
   methods: {

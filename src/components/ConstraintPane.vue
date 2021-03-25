@@ -47,11 +47,20 @@
 </template>
 
 <script>
-import ConstraintModal from "./ConstraintModal.vue"
+import {
+  BTable,
+  BIconPlusCircle, BIconPencil,
+} from "bootstrap-vue";
+
+import ConstraintModal from "./ConstraintModal.vue";
 
 export default {
   name: 'ConstraintPane',
-  components: { ConstraintModal },
+  components: {
+    BTable,
+    BIconPlusCircle, BIconPencil,
+    ConstraintModal
+  },
   props: {
     constraints: {
       type: Array,

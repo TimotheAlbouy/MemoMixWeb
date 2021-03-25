@@ -27,8 +27,17 @@
 </template>
 
 <script>
+import {
+  BModal, BButton, BFormGroup, BFormInput,
+  BIconCheckCircle
+} from "bootstrap-vue";
+
 export default {
   name: 'SaveEntryModal',
+  components: {
+    BModal, BButton, BFormGroup, BFormInput,
+    BIconCheckCircle
+  },
   props: {
     value: {
       type: Boolean,

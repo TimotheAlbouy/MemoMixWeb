@@ -38,11 +38,20 @@
 </template>
 
 <script>
+import {
+  BTable,
+  BIconPlusCircle, BIconPencil
+} from "bootstrap-vue";
+
 import PersonModal from './PersonModal.vue';
 
 export default {
   name: 'PersonPane',
-  components: { PersonModal },
+  components: {
+    BTable,
+    BIconPlusCircle, BIconPencil,
+    PersonModal
+  },
   props: {
     persons: {
       type: Array,

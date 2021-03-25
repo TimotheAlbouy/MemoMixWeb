@@ -38,11 +38,20 @@
 </template>
 
 <script>
+import {
+  BTable,
+  BIconPlusCircle, BIconPencil
+} from "bootstrap-vue";
+
 import GroupModal from './GroupModal.vue';
 
 export default {
   name: 'GroupPane',
-  components: { GroupModal },
+  components: {
+    BTable,
+    BIconPlusCircle, BIconPencil,
+    GroupModal
+  },
   props: {
     groups: {
       type: Array,

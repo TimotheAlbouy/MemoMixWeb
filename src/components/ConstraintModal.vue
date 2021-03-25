@@ -41,27 +41,27 @@
             </b-table>
           </div>
           <div v-if="newConstraint.type == 'together'">
-            <b-form-group label="Dans le groupe" label-for="inGroup">
-              <b-form-select :options="groupOptions" id="inGroup"
-                v-model="newConstraint.inGroup"
-                :disabled="newConstraint.notInGroups.length >= 1"
+            <b-form-group label="Dans le groupe" label-for="mandatoryGroup">
+              <b-form-select :options="groupOptions" id="mandatoryGroup"
+                v-model="newConstraint.mandatoryGroup"
+                :disabled="newConstraint.forbiddenGroups.length >= 1"
               >
                 <template #first>
                   <b-select-option :value="null" />
                 </template>
               </b-form-select>
             </b-form-group>
-            <b-form-group label="Pas dans les groupes" label-for="notInGroups">
-              <b-form-select :options="groupOptions" id="notInGroups" v-model="reinitSelectGroup"
-                @change="groupId => addGroup(groupId)" :disabled="newConstraint.inGroup != null"
+            <b-form-group label="Pas dans les groupes" label-for="forbiddenGroups">
+              <b-form-select :options="groupOptions" id="forbiddenGroups" v-model="reinitSelectGroup"
+                @change="groupId => addGroup(groupId)" :disabled="newConstraint.mandatoryGroup != null"
               >
                 <template #first>
                   <b-form-select-option value="" disabled>-- Sélectionner un groupe --</b-form-select-option>
                 </template>
               </b-form-select>
             </b-form-group>
-            <div v-if="newConstraint.notInGroups.length >= 1">
-              <b-table small striped hover :fields="groupFields" :items="newConstraint.notInGroups">
+            <div v-if="newConstraint.forbiddenGroups.length >= 1">
+              <b-table small striped hover :fields="groupFields" :items="newConstraint.forbiddenGroups">
                 <template #cell(removeBtn)="data">
                   <div class="float-right">
                     <button @click="removeGroup(data.index)"
@@ -96,8 +96,17 @@
 </template>
 
 <script>
+import {
+  BModal, BButton, BTable, BFormGroup, BFormSelect, BFormSelectOption,
+  BIconXCircle, BIconCheckCircle,
+} from "bootstrap-vue";
+
 export default {
   name: 'ConstraintModal',
+  components: {
+    BModal, BButton, BTable, BFormGroup, BFormSelect, BFormSelectOption,
+    BIconXCircle, BIconCheckCircle
+  },
   props: {
     value: {
       type: Boolean,
@@ -146,14 +155,14 @@ export default {
         return {
           type: 'apart',
           persons: [],
-          inGroup: null,
-          notInGroups: []
+          mandatoryGroup: null,
+          forbiddenGroups: []
         };
       return {
         type: this.oldConstraint.type,
         persons: [...this.oldConstraint.persons],
-        inGroup: this.oldConstraint.inGroup,
-        notInGroups: [...this.oldConstraint.notInGroups]
+        mandatoryGroup: this.oldConstraint.mandatoryGroup,
+        forbiddenGroups: [...this.oldConstraint.forbiddenGroups]
       };
     },
     reinitConstraintModal() {
@@ -185,11 +194,11 @@ export default {
       this.removePersonBtnHover = false;
     },
     addGroup(groupId) {
-      this.newConstraint.notInGroups.push({ groupId: groupId });
+      this.newConstraint.forbiddenGroups.push({ groupId: groupId });
       this.groupOptions = this.generateGroupOptions();
     },
     removeGroup(index) {
-      this.newConstraint.notInGroups.splice(index, 1);
+      this.newConstraint.forbiddenGroups.splice(index, 1);
       this.groupOptions = this.generateGroupOptions();
       this.reinitSelectGroup = null;
       this.removeGroupBtnHover = false;
@@ -211,7 +220,7 @@ export default {
       let options = [];
       if (this.newConstraint) {
         for (let group of this.groups) {
-          if (this.newConstraint.notInGroups.every(({ groupId }) => groupId != group.groupId))
+          if (this.newConstraint.forbiddenGroups.every(({ groupId }) => groupId != group.groupId))
             options.push({
               value: group.groupId,
               text: group.groupId

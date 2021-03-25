@@ -54,13 +54,22 @@
 </template>
 
 <script>
+import {
+  BTable,
+  BIconCheckCircle, BIconPencil, BIconPlayCircle,
+} from "bootstrap-vue";
+
 import EntryModal from './EntryModal.vue';
 import SaveEntryModal from './SaveEntryModal.vue';
 import MemoMix from '../memomix/memomix';
 
 export default {
   name: 'EntryPane',
-  components: { EntryModal, SaveEntryModal },
+  components: {
+    BTable,
+    BIconCheckCircle, BIconPencil, BIconPlayCircle,
+    EntryModal, SaveEntryModal
+  },
   props: {
     groups: {
       type: Array,
@@ -112,22 +121,22 @@ export default {
           formattedEntry.set(group.groupId, new Set(group.persons.map(person => person.personId)));
         formattedHistory.push(formattedEntry);
       }
-      let togetherConstraints = [];
-      let apartConstraints = [];
+      let formattedConstraints = [];
       for (let constraint of this.constraints) {
-        let constraintToAdd = {
+        let constraintKeys = Object.keys(constraint);
+        let formattedConstraint = {
+          type: constraint.type,
           personIds: new Set(constraint.persons.map(person => person.personId))
         };
-        if (constraint.inGroup)
-          constraintToAdd.inGroup = constraint.inGroup;
-        else if (constraint.notInGroups)
-          constraintToAdd.notInGroups = new Set(constraint.notInGroups.map(group => group.groupId));
-        if (constraint.type == 'together')
-          togetherConstraints.push(constraintToAdd);
-        else if (constraint.type == 'apart')
-          apartConstraints.push(constraintToAdd);
+        if (constraintKeys.includes('mandatoryGroup'))
+          formattedConstraint.mandatoryGroup = constraint.mandatoryGroup;
+        if (constraintKeys.includes('forbiddenGroups'))
+          formattedConstraint.forbiddenGroups = new Set(
+            constraint.forbiddenGroups.map(forbiddenGroup => forbiddenGroup.groupId)
+          );
+        formattedConstraints.push(formattedConstraint);
       }
-      let memomix = new MemoMix(personIds, groupSizes, formattedHistory, togetherConstraints, apartConstraints);
+      let memomix = new MemoMix(personIds, groupSizes, formattedHistory, formattedConstraints);
       let entryMap = memomix.getNewEntry();
       this.entry = {
         title: null,

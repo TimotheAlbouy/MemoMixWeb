@@ -17,7 +17,7 @@
           <b-form-group label="Taille du groupe" label-for="size">
             <b-form-input type="number" v-model.number="newGroup.size" required />
           </b-form-group>
-          <b-form-checkbox v-model="newGroup.updateHistory" v-if="!isCreationModal">
+          <b-form-checkbox v-model="updateHistory" v-if="!isCreationModal" switch>
             Modifier les occurrences du groupe dans l'historique
           </b-form-checkbox>
         </b-form>
@@ -38,8 +38,17 @@
 </template>
 
 <script>
+import {
+  BModal, BButton, BForm, BFormGroup, BFormInput, BFormCheckbox,
+  BIconXCircle, BIconCheckCircle
+} from "bootstrap-vue";
+
 export default {
   name: 'GroupModal',
+  components: {
+    BModal, BButton, BForm, BFormGroup, BFormInput, BFormCheckbox,
+    BIconXCircle, BIconCheckCircle
+  },
   props: {
     value: {
       type: Boolean,
