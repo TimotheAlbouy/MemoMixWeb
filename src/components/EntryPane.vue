@@ -61,7 +61,7 @@ import {
 
 import EntryModal from './EntryModal.vue';
 import SaveEntryModal from './SaveEntryModal.vue';
-import MemoMix from '../memomix/memomix';
+import MemoMix from '../memomix/MemoMix';
 
 export default {
   name: 'EntryPane',
@@ -126,7 +126,7 @@ export default {
         let constraintKeys = Object.keys(constraint);
         let formattedConstraint = {
           type: constraint.type,
-          personIds: new Set(constraint.persons.map(person => person.personId))
+          persons: new Set(constraint.persons.map(person => person.personId))
         };
         if (constraintKeys.includes('mandatoryGroup'))
           formattedConstraint.mandatoryGroup = constraint.mandatoryGroup;
