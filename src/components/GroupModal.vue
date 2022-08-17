@@ -15,7 +15,7 @@
             </div>
           </b-form-group>
           <b-form-group label="Taille du groupe" label-for="size">
-            <b-form-input type="number" v-model.number="newGroup.size" required />
+            <b-form-input type="number" min="1" v-model.number="newGroup.size" required />
           </b-form-group>
           <b-form-checkbox v-model="updateHistory" v-if="!isCreationModal" switch>
             Modifier les occurrences du groupe dans l'historique

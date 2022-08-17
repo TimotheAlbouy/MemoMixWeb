@@ -1,0 +1,3 @@
+- have multiple projects
+- export/import project in JSON file
+- english version

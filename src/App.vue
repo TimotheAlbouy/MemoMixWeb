@@ -50,33 +50,12 @@ import PersonPane from './components/PersonPane.vue';
 import ConstraintPane from './components/ConstraintPane.vue';
 import EntryPane from './components/EntryPane.vue';
 import HistoryPane from './components/HistoryPane.vue';
+import {
+  getGroupsKey, getPersonsKey, getConstraintsKey, getHistoryKey,
+  getCurrentProjectKey, getProjectsKey
+} from './util/projectImportExport.js';
 
-const storageKeyPrefix = 'MemoMix--';
 const defaultProject = 'default';
-
-function getGroupsKey(project) {
-  return storageKeyPrefix + project + '--Groups';
-}
-
-function getPersonsKey(project) {
-  return storageKeyPrefix + project + '--Persons';
-}
-
-function getConstraintsKey(project) {
-  return storageKeyPrefix + project + '--Constraints';
-}
-
-function getHistoryKey(project) {
-  return storageKeyPrefix + project + '--History';
-}
-
-function getCurrentProjectKey() {
-  return storageKeyPrefix + 'CurrentProject';
-}
-
-function getProjectsKey() {
-  return storageKeyPrefix + 'Projects';
-}
 
 export default {
   name: 'App',
@@ -112,13 +91,18 @@ export default {
       let newGroupId = group.groupId;
       
       for (let constraint of this.constraints) {
-        if (constraint.inGroup == oldGroupId)
-          constraint.inGroup = newGroupId;
-        let otherGroup = constraint.notInGroups.find(({ groupId }) => groupId == oldGroupId);
-        if (otherGroup)
-          otherGroup.groupId = newGroupId;
+        let constraintKeys = Object.keys(constraint);
+        if (constraintKeys.includes('mandatoryGroup') && constraint.mandatoryGroup == oldGroupId)
+          constraint.forbiddenGroups = newGroupId;
+        if (constraintKeys.includes('forbiddenGroups')) {
+          let otherGroup = constraint.forbiddenGroups.find(({ groupId }) => groupId == oldGroupId);
+          if (otherGroup)
+            otherGroup.groupId = newGroupId;
+        }
       }
+      this.groups.splice(index, 1, group);
       this.saveGroups();
+      this.saveConstraints();
 
       if (updateHistory) {
         for (let entry of this.history)
@@ -127,16 +111,23 @@ export default {
               otherGroup.groupId = newGroupId;
         this.saveHistory();
       }
-
-      this.groups.splice(index, 1, group);
     },
     addGroup(group) {
       this.groups.push(group);
       this.saveGroups();
     },
     removeGroup(index) {
+      let groupId = this.groups[index].groupId;
+      for (let constraint of this.constraints) {
+        if (constraint.mandatoryGroup == groupId)
+          constraint.mandatoryGroup = null;
+        let i = constraint.forbiddenGroups.findIndex(group => group.mandatoryGroup == groupId);
+        if (i >= 0)
+          constraint.forbiddenGroups.splice(i, 1);
+      }
       this.groups.splice(index, 1);
       this.saveGroups();
+      this.saveConstraints();
     },
     updatePerson(index, person, updateHistory) {
       let oldPersonId = this.persons[index].personId;
@@ -146,7 +137,9 @@ export default {
         if (otherPerson)
           otherPerson.personId = newPersonId;
       }
+      this.persons.splice(index, 1, person);
       this.savePersons();
+      this.saveConstraints();
 
       if (updateHistory) {
         for (let entry of this.history)
@@ -156,16 +149,21 @@ export default {
                 otherPerson.personId = newPersonId;
         this.saveHistory();
       }
-
-      this.persons.splice(index, 1, person);
     },
     addPerson(person) {
       this.persons.push(person);
       this.savePersons();
     },
     removePerson(index) {
+      let personId = this.persons[index].personId;
+      for (let constraint of this.constraints) {
+        let i = constraint.persons.findIndex(person => person.personId == personId);
+        if (i >= 0)
+          constraint.persons.splice(i, 1);
+      }
       this.persons.splice(index, 1);
       this.savePersons();
+      this.saveConstraints();
     },
     updateConstraint(index, constraint) {
       this.constraints.splice(index, 1, constraint);
